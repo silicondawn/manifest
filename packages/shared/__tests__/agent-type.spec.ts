@@ -15,6 +15,7 @@ describe('agent-type', () => {
       'openclaw',
       'hermes',
       'claude-code',
+      'codex',
       'openai-sdk',
       'anthropic-sdk',
       'vercel-ai-sdk',
@@ -57,6 +58,17 @@ describe('agent-type', () => {
     expect(PLATFORMS_BY_CATEGORY.coding).toContain('claude-code');
     expect(PLATFORMS_BY_CATEGORY.personal).not.toContain('claude-code');
     expect(PLATFORMS_BY_CATEGORY.app).not.toContain('claude-code');
+  });
+
+  it('places codex under coding only, alongside claude-code', () => {
+    expect(PLATFORMS_BY_CATEGORY.coding).toContain('codex');
+    expect(PLATFORMS_BY_CATEGORY.personal).not.toContain('codex');
+    expect(PLATFORMS_BY_CATEGORY.app).not.toContain('codex');
+  });
+
+  it('exposes a Codex CLI label and registered icon', () => {
+    expect(PLATFORM_LABELS.codex).toBe('Codex CLI');
+    expect(PLATFORM_ICONS.codex).toBe('/icons/providers/codex.svg');
   });
 
   it('keeps "other" available in every category for the unknown-platform fallback', () => {
@@ -111,6 +123,7 @@ describe('agent-type', () => {
       expect(platformIcon('openclaw', 'personal')).toBe(PLATFORM_ICONS.openclaw);
       expect(platformIcon('hermes', 'personal')).toBe(PLATFORM_ICONS.hermes);
       expect(platformIcon('claude-code', 'coding')).toBe(PLATFORM_ICONS['claude-code']);
+      expect(platformIcon('codex', 'coding')).toBe(PLATFORM_ICONS.codex);
       expect(platformIcon('openai-sdk', 'app')).toBe(PLATFORM_ICONS['openai-sdk']);
       expect(platformIcon('anthropic-sdk', 'app')).toBe(PLATFORM_ICONS['anthropic-sdk']);
       expect(platformIcon('vercel-ai-sdk', 'app')).toBe(PLATFORM_ICONS['vercel-ai-sdk']);
