@@ -32,4 +32,9 @@ packages/backend/src/**/*.spec.ts
 # Wingman is a dev-only gateway tester; never ship it in the Docker image.
 # (The Dockerfile already excludes it via explicit COPY paths and the turbo
 # --filter list, but ignoring it here keeps the build context smaller too.)
+# Exception: its package.json must reach the deps COPY so `npm ci` sees the
+# complete workspace tree — the root package.json lists wingman as a
+# workspace and the lock file has its entries, so omitting this file fails
+# the strict lock-vs-disk check on cold builds (post `docker builder prune`).
 packages/wingman/
+!packages/wingman/package.json

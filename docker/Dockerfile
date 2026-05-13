@@ -13,6 +13,14 @@ COPY package.json package-lock.json turbo.json ./
 COPY packages/shared/package.json packages/shared/
 COPY packages/frontend/package.json packages/frontend/
 COPY packages/backend/package.json packages/backend/
+# manifest + wingman are workspace members declared in the root package.json's
+# `workspaces` array. Without these COPYs, `npm ci` reads the lock file
+# expecting both workspace entries to exist on disk, fails the strict lock
+# check (lock-vs-disk mismatch), and aborts the build. The build only worked
+# previously when buildx cache for this stage was already warm; cold builds
+# (post `docker builder prune`) tripped this bug.
+COPY packages/manifest/package.json packages/manifest/
+COPY packages/wingman/package.json packages/wingman/
 RUN --mount=type=cache,target=/root/.npm \
     npm ci --prefer-offline --no-audit --no-fund --loglevel=error
 
@@ -40,6 +48,8 @@ COPY package.json package-lock.json ./
 COPY packages/shared/package.json packages/shared/
 COPY packages/frontend/package.json packages/frontend/
 COPY packages/backend/package.json packages/backend/
+COPY packages/manifest/package.json packages/manifest/
+COPY packages/wingman/package.json packages/wingman/
 RUN --mount=type=cache,target=/root/.npm \
     npm ci --omit=dev --omit=optional --ignore-scripts \
            --prefer-offline --no-audit --no-fund --loglevel=error && \
